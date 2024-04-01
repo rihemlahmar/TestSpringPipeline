@@ -1,0 +1,5 @@
+FROM openjdk:21-jdk
+MAINTAINER BePrimeTech <contact@beprimetech.com>
+ADD target/version_tag.jar  version_tag.jar
+ENTRYPOINT ["java", "-XX:+HeapDumpOnOutOfMemoryError", "-XX:HeapDumpPath=/tmp/dumps", "-jar","-Dspring.profiles.active=stage", "/version_tag.jar"]
+EXPOSE 8080
