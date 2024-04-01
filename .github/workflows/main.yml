@@ -8,12 +8,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - name: Extract version and artifact ID from pom.xml
         run: |
-          VERSION_POM=<span class="math-inline">\(xmllint \-\-xpath '/\*\[local\-name\(\)\="project"\]/\*\[local\-name\(\)\="version"\]/text\(\)' pom\.xml\)
-          ARTIFACT\_ID\=</span>(xmllint --xpath '/*[local-name()="project"]/*[local-name()="artifactId"]/text()' pom.xml)
-         echo "VERSION_POM: $VERSION_POM"
-         echo "ARTIFACT_ID: $ARTIFACT_ID"
+          VERSION_POM=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)
+          ARTIFACT_ID=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="artifactId"]/text()' pom.xml)
+          echo "VERSION_POM: $VERSION_POM"
+          echo "ARTIFACT_ID: $ARTIFACT_ID"
 
       - name: Set up cache for Maven dependencies
         uses: actions/cache@v3
