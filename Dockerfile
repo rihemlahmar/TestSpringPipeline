@@ -1,5 +1,5 @@
 FROM openjdk:21-jdk
-MAINTAINER BePrimeTech <contact@beprimetech.com>
+# MAINTAINER BePrimeTech <contact@beprimetech.com>
 ADD target/*  version_tag.jar
 # Create a directory for the Debugger. Add and unzip the agent in the directory.
 #RUN mkdir /opt/cdbg && \
