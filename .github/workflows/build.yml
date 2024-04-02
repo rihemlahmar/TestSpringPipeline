@@ -5,31 +5,42 @@ on:
 jobs:
   # Build stage
   Build:
-    name: build spring-project
+    name: maven-build
     runs-on: ubuntu-20.04
     steps:
-      - name: checkout code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: setup jdk 21
+      - name: Setup JDK 21
         uses: actions/setup-java@v3
         with:
           distribution: 'corretto'
           java-version: 21
+          cache: 'maven'
 
-      - name: unit tests
-        run: mvn -B test --file pom.xml
+      - name: Restore Maven cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2-
 
-      - name: build the app
-        run: |
-          mvn clean
-          mvn -B package --file pom.xml
-  Test:
-    name: test spring-project
-    runs-on: ubuntu-20.04
-  Package:
-    name: package spring-project
-    runs-on: ubuntu-20.04
-  deploy:
-    name: deploy spring-project
-    runs-on: ubuntu-20.04
+      - name: Maven clean install
+        run: mvn clean install
+
+      - name: Cache built JAR
+        uses: actions/cache@v3
+        with:
+          path: target/
+          key: ${{ runner.os }}-jar-${{ hashFiles('target/*.jar') }}
+          restore-keys: ${{ runner.os }}-jar-
+
+
+  #Test:
+   # name: test spring-project
+
+#  Package:
+ #   name: package spring-project
+
+  #deploy:
+   # name: deploy spring-project
