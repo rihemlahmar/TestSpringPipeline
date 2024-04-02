@@ -39,6 +39,10 @@ jobs:
             tags: ${{ secrets.DOCKER_HUB_USERNAME }}hello-kubernetes:latest
 
 
+            #tags: rihemlahmar/hello-kubernetes-app:latest
+
+
+
 
 
 
