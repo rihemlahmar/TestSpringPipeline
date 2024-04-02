@@ -1,0 +1,35 @@
+name: orchestrator-pipeline-build
+on:
+  push:
+    branches: [ develop ]
+jobs:
+  # Build stage
+  Build:
+    name: build spring-project
+    runs-on: ubuntu-20.04
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v3
+
+      - name: setup jdk 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: 21
+
+      - name: unit tests
+        run: mvn -B test --file pom.xml
+
+      - name: build the app
+        run: |
+          mvn clean
+          mvn -B package --file pom.xml
+  Test:
+    name: test spring-project
+    runs-on: ubuntu-20.04
+  Package:
+    name: package spring-project
+    runs-on: ubuntu-20.04
+  deploy:
+    name: deploy spring-project
+    runs-on: ubuntu-20.04
