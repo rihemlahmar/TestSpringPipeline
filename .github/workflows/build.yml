@@ -42,13 +42,15 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2-
 
+      - name: XML Lint
+        uses: ChristophWurst/xmllint-action@v1.2.1  # Use the xmllint action
 
       - name: Extract project version and artifact ID
         run: |
             VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)
             ARTIFACT_ID=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="artifactId"]/text()' pom.xml)
             echo "VERSION=$VERSION" >> $GITHUB_ENV
-            echo "ARTIFACT_ID=$ARTIFACT_ID" >> $GITHUB_ENV    
+            echo "ARTIFACT_ID=$ARTIFACT_ID" >> $GITHUB_ENV
 
       - name: Maven clean install
         run: mvn clean install
