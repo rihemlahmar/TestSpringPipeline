@@ -1,8 +1,13 @@
 name: orchestrator-pipeline-build
 on:
+  workflow_dispatch:
+      inputs:
+        name:
+          description: "Who to greet"
+          default: "World"
   push:
     branches: [ develop ]
-  workflow_dispatch:
+
 jobs:
   # Build stage
   Build:
