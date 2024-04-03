@@ -42,12 +42,26 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2-
 
+      - name: Extract version from pom.xml
+        run: |
+          VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)
+                echo "VERSION=$VERSION" >> $GITHUB_ENV  # Export to environment variable
+      - name: Extract artifact ID from pom.xml
+        run: |
+                ARTIFACT_ID=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="artifactId"]/text()' pom.xml)
+                echo "ARTIFACT_ID=$ARTIFACT_ID" >> $GITHUB_ENV  # Export to environment variable
+      - name: Use extracted values (optional)
+        run: |
+                echo "Extracted version: $VERSION"
+                echo "Extracted artifact ID: $ARTIFACT_ID"
+          
+          
 
       - name: Extract project version and artifact ID
         run: |
             VERSION=$(mvn help:evaluate -Dexpression=project.version -q -Dmvn.repo.local=$HOME/.m2/repository)
             ARTIFACT_ID=$(mvn help:evaluate -Dexpression=project.artifactId -q -Dmvn.repo.local=$HOME/.m2/repository)
-            echo "VERSION=$VERSION" >> $GITHUB_ENV  # Export variables
+            echo "VERSION=$VERSION" >> $GITHUB_ENV  
             echo "ARTIFACT_ID=$ARTIFACT_ID" >> $GITHUB_ENV
 
       - name: Maven clean install
