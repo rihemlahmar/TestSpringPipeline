@@ -109,6 +109,7 @@ jobs:
             ARTIFACT_ID=$(mvn help:evaluate -Dexpression=project.artifactId -q -Dmvn.repo.local=$HOME/.m2/repository)
             echo "VERSION=$VERSION" >> $GITHUB_ENV  
             echo "ARTIFACT_ID=$ARTIFACT_ID" >> $GITHUB_ENV
+            echo $ARTIFACT_ID-$VERSION_POM
   
 
   docker-build:
