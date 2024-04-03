@@ -44,13 +44,11 @@ jobs:
 
 
       - name: Extract version from pom.xml
-        run: echo "VERSION=$(xml xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)"
-        shell: bash
-
-      - name: Extract artifact id from pom.xml
-        run: echo "ARTIFACT_ID=$(xml xpath '/*[local-name()="project"]/*[local-name()="artifactId"]/text()' pom.xml)"
-        shell: bash
-
+        run: |
+          VERSION=$(xml xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)
+          ARTIFACT_ID=$(xml xpath '/*[local-name()="project"]/*[local-name()="artifactId"]/text()' pom.xml)
+          echo "Version: $VERSION"
+          echo "Artifact Id: $ARTIFACT_ID"
 
       - name: Maven clean install
         run: mvn clean install
