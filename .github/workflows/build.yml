@@ -44,11 +44,10 @@ jobs:
 
 
       - name: Extract project version and artifact ID
-        uses : ChristophWurst/xmllint-action@v1
         run: |
-            VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)
-            ARTIFACT_ID=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="artifactId"]/text()' pom.xml)
-            echo "VERSION=$VERSION" >> $GITHUB_ENV
+            VERSION=$(mvn help:evaluate -Dexpression=project.version -q -Dmvn.repo.local=$HOME/.m2/repository)
+            ARTIFACT_ID=$(mvn help:evaluate -Dexpression=project.artifactId -q -Dmvn.repo.local=$HOME/.m2/repository)
+            echo "VERSION=$VERSION" >> $GITHUB_ENV  # Export variables
             echo "ARTIFACT_ID=$ARTIFACT_ID" >> $GITHUB_ENV
 
       - name: Maven clean install
