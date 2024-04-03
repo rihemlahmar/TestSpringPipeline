@@ -103,13 +103,13 @@ jobs:
         - uses: actions/checkout@v3  # Checkout code from your repository
         - name: Copy artifacts
           run: echo " target.jar"
-        - name: Extract version from pom.xml
-          run: |
-            VERSION=$(mvn help:evaluate -Dexpression=project.version -q -Dmvn.repo.local=$HOME/.m2/repository)
-            ARTIFACT_ID=$(mvn help:evaluate -Dexpression=project.artifactId -q -Dmvn.repo.local=$HOME/.m2/repository)
-            echo "VERSION=$VERSION" >> $GITHUB_ENV  
-            echo "ARTIFACT_ID=$ARTIFACT_ID" >> $GITHUB_ENV
-            echo $ARTIFACT_ID-$VERSION_POM
+        #- name: Extract version from pom.xml
+        #  run: |
+        #    VERSION=$(mvn help:evaluate -Dexpression=project.version -q -Dmvn.repo.local=$HOME/.m2/repository)
+        #    ARTIFACT_ID=$(mvn help:evaluate -Dexpression=project.artifactId -q -Dmvn.repo.local=$HOME/.m2/repository)
+        #    echo "VERSION=$VERSION" >> $GITHUB_ENV
+        #    echo "ARTIFACT_ID=$ARTIFACT_ID" >> $GITHUB_ENV
+        #    echo $ARTIFACT_ID-$VERSION_POM
   
 
   docker-build:
@@ -118,9 +118,34 @@ jobs:
       - run: echo "This job will be run first, in parallel with build_a"
 
   build_push_gcr-stage:
-    runs-on: ubuntu-latest
+    name: Build and Push to GCR (Stage)  # Descriptive name for the job
+    runs-on: ubuntu-latest  # Runner image (optional, defaults to ubuntu-latest)
+    container: beprimetech/docker:stable-dind  # Docker container for the job
+
     steps:
-      - run: echo "This job will be run first, in parallel with build_a"
+        - name: Informational message (optional)
+          run: echo "No stage cluster yet"  # Informational message, can be removed
+
+        - uses: actions/checkout@v3  # Checkout code from your repository
+
+        - name: Wait for build-maven-stage job (assuming success)
+          uses: actions/dependency@v3  # Wait for successful completion of build-maven-stage job
+          with:
+            dependsOn: build-maven-stage  # Name of the job to wait for
+            required: true  # Fail if build-maven-stage job fails
+
+        - name: Download artifacts from build-maven-stage (optional)
+          uses: actions/download-artifact@v3  # Download artifacts from build-maven-stage job (if needed)
+          with:
+            name: artifacts  # Name of the artifact from build-maven-stage job (if applicable)
+
+
+    #only:
+    #  branches: [ stage ]  # Only run on pushes to the "stage" branch (replace with your branch pattern)
+
+    #tags:
+    #    - in-container  # Job runs within a container
+
 
   build-maven-stage:
     runs-on: ubuntu-latest
