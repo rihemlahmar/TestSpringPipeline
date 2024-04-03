@@ -21,7 +21,7 @@ on:
 
 jobs:
   # Build stage
-  Build:
+  maven-build:
     name: maven-build
     runs-on: ubuntu-latest
     steps:
@@ -42,21 +42,6 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2-
 
-      - name: Extract version from pom.xml
-        run: |
-          VERSION=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)
-                echo "VERSION=$VERSION" >> $GITHUB_ENV  # Export to environment variable
-      - name: Extract artifact ID from pom.xml
-        run: |
-                ARTIFACT_ID=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="artifactId"]/text()' pom.xml)
-                echo "ARTIFACT_ID=$ARTIFACT_ID" >> $GITHUB_ENV  # Export to environment variable
-      - name: Use extracted values (optional)
-        run: |
-                echo "Extracted version: $VERSION"
-                echo "Extracted artifact ID: $ARTIFACT_ID"
-          
-          
-
       - name: Extract project version and artifact ID
         run: |
             VERSION=$(mvn help:evaluate -Dexpression=project.version -q -Dmvn.repo.local=$HOME/.m2/repository)
@@ -75,12 +60,53 @@ jobs:
           restore-keys: ${{ runner.os }}-jar-
 
 
-  #Test:
-  #name: sast/sonarqube
+  sast:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This job will be run first, in parallel with build_a"
 
+  spotbugs-sast:
+    runs-on: ubuntu-latest
+    needs: [maven-build]
+    steps:
+      - run: echo "This job will run after build_a and build_b have finished"
 
-    #  Package:
-    #   name: package spring-project
+  secret_detection:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This job will be run first, in parallel with build_a"
 
-    #deploy:
-    # name: kubernetes
+  sonarqube-check:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This job will be run first, in parallel with build_a"
+
+  deploy-okd-develop:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This job will be run first, in parallel with build_a"
+
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This job will be run first, in parallel with build_a"
+
+  build_push_gcr-stage:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This job will be run first, in parallel with build_a"
+
+  build-maven-stage:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This job will be run first, in parallel with build_a"
+
+  deploy-to-stage:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This job will be run first, in parallel with build_a"
+
+  deploy-to-production:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This job will be run first, in parallel with build_a"
