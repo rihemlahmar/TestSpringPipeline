@@ -2,6 +2,7 @@ name: orchestrator-pipeline-build
 on:
   push:
     branches: [ develop ]
+  workflow_dispatch:
 jobs:
   # Build stage
   Build:
@@ -37,10 +38,11 @@ jobs:
 
 
   #Test:
-   # name: test spring-project
+  #name: sast/sonarqube
 
-#  Package:
- #   name: package spring-project
 
-  #deploy:
-   # name: deploy spring-project
+    #  Package:
+    #   name: package spring-project
+
+    #deploy:
+    # name: kubernetes
