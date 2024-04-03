@@ -105,8 +105,10 @@ jobs:
           run: echo " target.jar"
         - name: Extract version from pom.xml
           run: |
-            export VERSION_POM=$(xml xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)
-            export ARTIFACT_ID=$(xml xpath '/*[local-name()="project"]/*[local-name()="artifactId"]/text()' pom.xml)
+            VERSION=$(mvn help:evaluate -Dexpression=project.version -q -Dmvn.repo.local=$HOME/.m2/repository)
+            ARTIFACT_ID=$(mvn help:evaluate -Dexpression=project.artifactId -q -Dmvn.repo.local=$HOME/.m2/repository)
+            echo "VERSION=$VERSION" >> $GITHUB_ENV  
+            echo "ARTIFACT_ID=$ARTIFACT_ID" >> $GITHUB_ENV
   
 
   docker-build:
