@@ -5,8 +5,6 @@ on:
         name:
           description: "Who to greet"
           default: "World"
-  push:
-    branches: [ develop ]
 
 jobs:
   # Build stage
